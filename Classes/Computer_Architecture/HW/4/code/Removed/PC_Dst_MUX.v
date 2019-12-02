@@ -9,7 +9,7 @@ module PC_Dst_MUX
 // Interface
 input   [31:0] pcBranch_i;
 input   [31:0] pcNext_i;
-input   [31:0] branchSignal_i;
+input   [ 1:0] branchSignal_i;
 output  [31:0] pc_o;
 
 // Calculate

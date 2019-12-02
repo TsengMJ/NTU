@@ -2,22 +2,19 @@
 `include "Instruction_Memory.v"
 `include "Registers.v"
 `include "Data_Memory.v"
-`include "PC_Adder.v"
-`include "Branch_Adder.v"
-`include "PC_Dst_MUX.v"
-`include "WB_Addr_MUX.v"
-`include "WB_MUX.v"
-`include "ALU_Input1_MUX.v"
-`include "ALU_Input2_MUX.v"
-`include "RT_IMM_MUX.v"
-`include "Stall_MUX.v"
+`include "Adder.v"
+`include "MUX32.v"
+`include "MUX5.v"
+`include "MUX_MemToReg.v"
+`include "MUX_AluSrc.v"
+`include "MUX_Stall.v"
 `include "ALU.v"
 `include "Control.v"
 `include "ALU_Control.v"
-`include "IF_ID_Register.v"
-`include "ID_EX_Register.v"
-`include "EX_MEM_Register.v"
-`include "MEM_WB_Register.v"
+`include "Register_IF_ID.v"
+`include "Register_ID_EX.v"
+`include "Register_EX_MEM.v"
+`include "Register_MEM_WB.v"
 `include "Sign_Extend.v"
 `include "Shift.v"
 `include "Branch_Equal.v"
@@ -75,86 +72,82 @@ Data_Memory Data_Memory(
 // Start HERE!!
 
 // ADDER 專區
-PC_Adder PC_Adder(
-    .instrAddr_i    (IF_instrAddr),
-    .instrSize_i    (IF_instrSize),
-    .pcNext_o       (IF_pcNext)
+Adder PC_Adder(
+    .operand1_i     (IF_instrAddr),
+    .operand2_i     (IF_instrSize),
+    .result_o       (IF_pcNext)
 );
 
-Branch_Adder Branch_Adder(
-    .immShifted_i   (ID_immShifted),
-    .instrAddr_i    (ID_instrAddr),
-    .pcBranch_o     (ID_pcBranch),
+Adder Branch_Adder(
+    .operand1_i     (ID_immShifted),
+    .operand2_i     (ID_instrAddr),
+    .result_o       (ID_pcBranch),
 )
 
 
 // MUX 專區
-PC_Dst_MUX PC_Dst_MUX(
-    .pcBranch_i     (ID_pcBranch),
-    .pcNext_i       (IF_pcNext),
-    .branchSignal_i (ID_branch)
-    .pc_o           (IF_pc)
+MUX32 PC_Dst_MUX(
+    .source1_i      (ID_pcBranch),
+    .source2_i      (IF_pcNext),
+    .signal_i       (ID_branch)
+    .output_o       (IF_pc)
 );
 
-WB_Addr_MUX WB_Addr_MUX(
+MUX32 RT_IMM_MUX(
+    .source1_i      (EX_rtData),
+    .source2_i      (EX_immExtended),
+    .signal_i       (EX_aluSrc),
+    .output_o       (EX_rt_immMuxOutput)
+);
+
+
+MUX5 WB_Addr_MUX(
     .rtAddr_i       (EX_rtAddr),
     .rdAddr_i       (EX_rdAddr),
     .wbDst_i        (EX_wbDst),
     .wbAddr_o       (EX_wbAddr)
 );
 
-WB_MUX WB_MUX(
+//  反的
+MUX_MemToReg MUX_MemToReg(
     .memData_i     (WB_memData),
     .aluResult_i   (WB_aluResult),
     .memToReg_i    (WB_memToReg),
     .wbData_o      (WB_wbData)
 );
 
-ALU_Input1_MUX ALU_Input1_MUX(
-    .rsData_i           (EX_rsData),
-    .aluForwarding_i    (EX_aluForwarding),
-    .memForwarding_i    (EX_memForwarding),
-    .forwardingA_i      (EX_forwardingA),
-    .aluSrc1_o          (EX_aluSrc1)
+MUX_AluSrc MUX_AluSrc1(
+    .currentData_i   (EX_rsData),
+    .aluForward_i    (EX_aluForwarding),
+    .memForward_i    (EX_memForwarding),
+    .forwarSignal_i  (EX_forwardingA),
+    .output_o        (EX_aluSrc1)
 );
 
-ALU_Input2_MUX ALU_Input2_MUX(
-    .rt_immMuxOutput_i  (EX_rt_immMuxOutput),
-    .aluForwarding_i    (EX_aluForwarding),
-    .memForwarding_i    (EX_memForwarding),
-    .forwardingB_i       (EX_forwardingB),
-    .aluSrc2_o          (EX_aluSrc2)
+MUX_AluSrc MUX_AluSrc2(
+    .currentData_i   (EX_rt_immMuxOutput),
+    .aluForward_i    (EX_aluForwarding),
+    .memForward_i    (EX_memForwarding),
+    .forwarSignal_i  (EX_forwardingB),
+    .output_o        (EX_aluSrc2)
 );
 
-RT_IMM_MUX RT_IMM_MUX(
-    .rtData_i               (EX_rtData),
-    .immExtended_i          (EX_immExtended),
-    .aluSrc_i               (EX_aluSrc),
-    .rt_immMuxOutput_o      (EX_rt_immMuxOutput)
-);
-
-Stall_MUX Stall_MUX(
-    // EX use
+MUX_Stall MUX_Stall(,
+    .hazardDetected_i   (ID_hazardDetected)
     .aluOp_i            (ID_aluOp),
     .aluSrc_i           (ID_aluSrc),
     .wbDst_i            (ID_wbDst),
-    // MEM use
     .memRead_i          (ID_memRead),
     .memWrite_i         (ID_memWrite),
-    // WB use
     .memToReg_i         (ID_memToReg),
     .regWrite_i         (ID_regWrite),
-    .hazardDetected     (ID_hazardDetected),
     .zero_i             (zero),
     
-    // EX use
     .aluOp_o            (ID_aluOpMux),
     .aluSrc_o           (ID_aluSrcMux),
     .wbDst_o            (ID_wbDstMux),
-    // MEM use
     .memRead_o          (ID_memReadMux),
     .memWrite_o         (ID_memWriteMux),
-    // WB use
     .memToReg_o         (ID_memToRegMux),
     .regWrite_o         (ID_regWriteMux),
 );
@@ -200,7 +193,7 @@ ALU_Control ALU_Control(
 
 
 // PIPELINE REGISTER 專區
-IF_ID_Register IF_ID_Register(
+Register_IF_ID Register_IF_ID(
     .instr_i            (IF_instr),
     .instrAddr_i        (IF_instrAddr),
     .hazardDetected_i   (hazardDetected),
@@ -209,7 +202,7 @@ IF_ID_Register IF_ID_Register(
     .instrAddr_o        (ID_instrAddr)
 );
 
-ID_EX_Register ID_EX_Register(
+Register_ID_EX Register_ID_EX(
     .aluOp_i            (ID_aluOpMux),
     .aluSrc_i           (ID_aluSrcMux),
     .wbDst_i            (ID_wbDstMux),    // Use to control WB_Addr_MUX
@@ -239,7 +232,7 @@ ID_EX_Register ID_EX_Register(
     .rdAddr_o           (EX_rdAddr)
 );
 
-EX_MEM_Register EX_MEM_Register(
+Register_EX_MEM Register_EX_MEM(
     .memRead_i          (EX_memRead),
     .memWrite_i         (EX_memWrite),
     .memToReg_i         (EX_memToReg),
@@ -257,7 +250,7 @@ EX_MEM_Register EX_MEM_Register(
     .wbAddr_o           (MEM_wbAddr)
 );
 
-MEM_WB_Register MEM_WB_Register(
+Register_MEM_WB Register_MEM_WB(
     .memToReg_i         (MEM_memToReg),
     .regWrite_i         (MEM_regWrite),
     .memData_i          (MEM_memData),
