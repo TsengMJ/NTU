@@ -1,4 +1,4 @@
-module
+module Register_ID_EX
 (
     aluOp_i,
     aluSrc_i,

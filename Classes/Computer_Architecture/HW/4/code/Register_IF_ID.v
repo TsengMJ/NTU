@@ -1,4 +1,4 @@
-module IF_ID_Register
+module Register_IF_ID
 (
     instr_i,
     instrAddr_i,

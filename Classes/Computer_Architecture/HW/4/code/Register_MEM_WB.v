@@ -1,23 +1,20 @@
-module EX_MEM_Register
+module Register_MEM_WB
 (
-    memRead_i,
-    memWrite_i,
     memToReg_i,
+    regWrite_i,
+    memData_i,
     aluResult_i,
-    aluSrc2_i,
     wbAddr_i,
 
-    memRead_o,
-    memWrite_o,
     memToReg_o,
+    regWrite_o,
+    memData_o,
     aluResult_o,
-    aluSrc2_o,
     wbAddr_o
 );
 
 // Interface
 
 // Calculation
-
 
 endmodule
