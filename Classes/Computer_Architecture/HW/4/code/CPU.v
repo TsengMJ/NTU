@@ -32,6 +32,20 @@ input         clk_i;
 input         start_i;
 
 // Wires 專區
+// IF Section
+
+
+// ID Section
+
+
+// EX Section
+
+
+// MEM Section
+
+
+// WB Section
+
 
 
 // Original
@@ -44,15 +58,15 @@ PC PC(
 );
 
 Instruction_Memory Instruction_Memory(
-    .addr_i         (),
-    .instr_o        ()
+    .addr_i         (IF_instrAddr),
+    .instr_o        (IF_instr)
 );
 
 Registers Registers(
     .clk_i          (clk_i),
-    .RS1addr_i      (),
-    .RS2addr_i      (),
-    .RDaddr_i       (),
+    .RS1addr_i      (ID_rsAddr),
+    .RS2addr_i      (ID_rtAddr),
+    .RDaddr_i       (ID_rdAddr),
     .RDdata_i       (),
     .RegWrite_i     (),
     .RS1data_o      (),
