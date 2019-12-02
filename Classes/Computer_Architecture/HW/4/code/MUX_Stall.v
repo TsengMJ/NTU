@@ -38,7 +38,6 @@ output  [0:0] memWrite_o,
 output  [0:0] memToReg_o
 output  [0:0] regWrite_o,
 
-
 // Calculate
 assign aluOp_o    = (hazardDetected_i)? zero_i: aluOp_i;
 assign aluSrc_o   = (hazardDetected_i)? zero_i: aluSrc_i;
