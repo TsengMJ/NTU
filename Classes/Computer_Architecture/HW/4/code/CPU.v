@@ -208,6 +208,8 @@ ALU_Control ALU_Control(
 
 // PIPELINE REGISTER 專區
 Register_IF_ID Register_IF_ID(
+    .clk_i              (clk_i),
+
     .instr_i            (IF_instr),
     .instrAddr_i        (IF_instrAddr),
     .hazardDetected_i   (hazardDetected),
@@ -217,6 +219,8 @@ Register_IF_ID Register_IF_ID(
 );
 
 Register_ID_EX Register_ID_EX(
+    .clk_i              (clk_i),
+
     .aluOp_i            (ID_aluOpMux),
     .aluSrc_i           (ID_aluSrcMux),
     .wbDst_i            (ID_wbDstMux),    // Use to control WB_Addr_MUX
@@ -247,6 +251,8 @@ Register_ID_EX Register_ID_EX(
 );
 
 Register_EX_MEM Register_EX_MEM(
+    .clk_i              (clk_i),
+
     .memRead_i          (EX_memRead),
     .memWrite_i         (EX_memWrite),
     .memToReg_i         (EX_memToReg),
@@ -265,6 +271,8 @@ Register_EX_MEM Register_EX_MEM(
 );
 
 Register_MEM_WB Register_MEM_WB(
+    .clk_i              (clk_i),
+
     .memToReg_i         (MEM_memToReg),
     .regWrite_i         (MEM_regWrite),
     .memData_i          (MEM_memData),
