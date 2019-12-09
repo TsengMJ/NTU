@@ -11,21 +11,24 @@ module Register_IF_ID
 );
 
 // Interface
-    input           clk_i;
+input               clk_i;
+input               IFFlush_i;
+input       [31:0]  instr_i;
+input       [31:0]  instrAddr_i;
+input       [0:0]   hazardDetected_i;
 
-    input       [31:0]  instr_i;
-    input       [31:0]  instrAddr_i;
-    input       [0:0]   hazardDetected_i;
-
-    output reg  [31:0]  instr_o;
-    output reg  [31:0]  instrAddr_o;
+output reg  [31:0]  instr_o;
+output reg  [31:0]  instrAddr_o;
 
 // Calculate
-  always @ (posedge clk_i) begin
-    instr_o = instr_i;
-    instrAddr_o = instrAddr_i;
+always @ (posedge clk_i) begin
+  instr_o <= instr_i;
+  instrAddr_o <= instrAddr_i;
+
+  if (IFFlush_i) begin
+    instr_o <= 32'b0;
+    instrAddr_o <= 32'b0;
   end
-
-
+end
 
 endmodule

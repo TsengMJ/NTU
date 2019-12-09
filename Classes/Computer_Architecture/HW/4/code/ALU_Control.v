@@ -33,10 +33,10 @@ begin
     endcase
 
     if (funct_i[2:0] == 3'b010)
-        aluCtrl_o = 4'b0010
+        aluCtrl_o = 4'b0010;
 
     if (aluOp_i == 2'b01)
-        aluCtrl_o = 4'b0010
+        aluCtrl_o = 4'b0010;
 
 end
 

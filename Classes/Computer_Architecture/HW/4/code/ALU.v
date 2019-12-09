@@ -1,7 +1,7 @@
 module ALU
 (
-    aluInput1_i,
-    aluInput2_i,
+    aluSrc1_i,
+    aluSrc2_i,
     aluCtrl_i,
     aluResult_o
 );
@@ -18,8 +18,8 @@ module ALU
 // beq -> xxxxxxx000 : 01    : 0110 -> don't care
 
 // Interface
-input       [31:0] aluInput1_i;
-input       [31:0] aluInput2_i;
+input       [31:0] aluSrc1_i;
+input       [31:0] aluSrc2_i;
 input       [ 3:0] aluCtrl_i;
 output reg  [31:0] aluResult_o;
 
@@ -27,12 +27,12 @@ output reg  [31:0] aluResult_o;
 always @(*)
 begin
     case (aluCtrl_i)
-        4'b0000: aluResult_o = aluInput1_i & aluInput2_i;
-        4'b0001: aluResult_o = aluInput1_i | aluInput2_i;
-        4'b0010: aluResult_o = aluInput1_i + aluInput2_i;
-        4'b0110: aluResult_o = aluInput1_i - aluInput2_i;
-        4'b0011: aluResult_o = aluInput1_i * aluInput2_i;
-        4'b0110: aluResult_o = aluInput1_i - aluInput2_i;
+        4'b0000: aluResult_o = aluSrc1_i & aluSrc2_i;
+        4'b0001: aluResult_o = aluSrc1_i | aluSrc2_i;
+        4'b0010: aluResult_o = aluSrc1_i + aluSrc2_i;
+        4'b0110: aluResult_o = aluSrc1_i - aluSrc2_i;
+        4'b0011: aluResult_o = aluSrc1_i * aluSrc2_i;
+        4'b0110: aluResult_o = aluSrc1_i - aluSrc2_i;
     endcase
 end
 
