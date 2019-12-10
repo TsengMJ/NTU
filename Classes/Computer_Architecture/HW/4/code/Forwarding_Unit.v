@@ -1,64 +1,57 @@
 module Forwarding_Unit
 (
-	EX_MEM_RegWrite_i,
-	MEM_WB_RegWrite_i,
-	EX_MEM_RegisterRd_i,
-	MEM_WB_RegisterRd_i,
-	ID_EX_RegisterRs1_i,
-	ID_EX_RegisterRs2_i,
+	EX_rsAddr_i,
+	EX_rtAddr_i,
+	MEM_wbAddr_i,
+	MEM_regWrite_i,	
+	WB_wbAddr_i,
+	WB_regWrite_i,
+
 	Forward_A_o,
 	Forward_B_o,
+	Forward_C_o
 );
 
-input          EX_MEM_RegWrite_i;
-input  		   MEM_WB_RegWrite_i;
+input          MEM_regWrite_i;
+input  		   WB_regWrite_i;
 
-input  [4 : 0] EX_MEM_RegisterRd_i;
-input  [4 : 0] MEM_WB_RegisterRd_i;
-input  [4 : 0] ID_EX_RegisterRs1_i;
-input  [4 : 0] ID_EX_RegisterRs2_i;
-output reg [1 : 0] Forward_A_o;
-output reg [1 : 0] Forward_B_o;
+input  [4 : 0] MEM_wbAddr_i;
+input  [4 : 0] WB_wbAddr_i;
+input  [4 : 0] EX_rsAddr_i;
+input  [4 : 0] EX_rtAddr_i;
+output reg [1 : 0] Forward_A_o = 0;
+output reg [1 : 0] Forward_B_o = 0;
+output reg [1 : 0] Forward_C_o = 0;
 
 
 
-always @(EX_MEM_RegWrite_i || MEM_WB_RegWrite_i || EX_MEM_RegisterRd_i || MEM_WB_RegisterRd_i || ID_EX_RegisterRs1_i || ID_EX_RegisterRs2_i) 
+always @(*) 
 begin
-	if (EX_MEM_RegWrite_i && EX_MEM_RegisterRd_i && (EX_MEM_RegisterRd_i == ID_EX_RegisterRs1_i)) begin
+
+	if (MEM_regWrite_i && (MEM_wbAddr_i != 5'b0) && (MEM_wbAddr_i == EX_rsAddr_i)) begin
 		Forward_A_o = 2'b10;
-	end else if (MEM_WB_RegWrite_i && (MEM_WB_RegisterRd_i!=0) && (MEM_WB_RegisterRd_i == ID_EX_RegisterRs1_i)) begin
+	end else if (WB_regWrite_i && (WB_wbAddr_i!= 5'b0) && (WB_wbAddr_i == EX_rsAddr_i)) begin
 		Forward_A_o = 2'b01;
 	end else begin
 		Forward_A_o = 2'b00;
 	end
 
-	if (EX_MEM_RegWrite_i && EX_MEM_RegisterRd_i && (EX_MEM_RegisterRd_i == ID_EX_RegisterRs2_i)) begin
+	if (MEM_regWrite_i && (MEM_wbAddr_i != 5'b0) && (MEM_wbAddr_i == EX_rtAddr_i)) begin
 		Forward_B_o = 2'b10;
-	end else if (MEM_WB_RegWrite_i && (MEM_WB_RegisterRd_i!=0) && (MEM_WB_RegisterRd_i == ID_EX_RegisterRs2_i)) begin
+	end else if (WB_regWrite_i && (WB_wbAddr_i != 5'b0) && (WB_wbAddr_i == EX_rtAddr_i)) begin
 		Forward_B_o = 2'b01;
 	end else begin
 		Forward_B_o = 2'b00;
 	end
 
-	// if (EX_MEM_RegWrite_i && (EX_MEM_RegisterRd_i!=0) && (EX_MEM_RegisterRd_i == ID_EX_RegisterRs1_i)) 
-	// 	begin
-	// 		Forward_A_o = 2'b10;
-	// 	end
+	if (MEM_regWrite_i && (MEM_wbAddr_i!=5'b0) && (MEM_wbAddr_i == EX_rtAddr_i)) begin
+		Forward_C_o = 2'b10;
+	end else if (WB_regWrite_i && (WB_wbAddr_i!=5'b0) && (WB_wbAddr_i == EX_rtAddr_i)) begin
+		Forward_C_o = 2'b01;
+	end else begin
+		Forward_C_o = 2'b00;
+	end
 
-	// else if (EX_MEM_RegWrite_i && (EX_MEM_RegisterRd_i != 0) && ( EX_MEM_RegisterRd_i == ID_EX_RegisterRs2_i )) 
-	// 	begin
-	// 		Forward_B_o = 2'b10;
-	// 	end
-
-	// if(MEM_WB_RegWrite_i && (MEM_WB_RegisterRd_i !=0) &&  !(EX_MEM_RegWrite_i && (EX_MEM_RegisterRd_i != 0) && (MEM_WB_RegisterRd_i == ID_EX_RegisterRs1_i) &&  (MEM_WB_RegisterRd_i == ID_EX_RegisterRs1_i)))
-	// 	begin
-	// 		Forward_B_o = 2'b01;
-	// 	end
-
-	// if(MEM_WB_RegWrite_i && (MEM_WB_RegisterRd_i != 0 ) && !(EX_MEM_RegWrite_i && (EX_MEM_RegisterRd_i !=0) && (EX_MEM_RegisterRd_i == ID_EX_RegisterRs2_i)) &&  (MEM_WB_RegisterRd_i == ID_EX_RegisterRs2_i))
-	// 	begin
-	// 		Forward_B_o = 2'b01;
-	// 	end
 end
 
 endmodule

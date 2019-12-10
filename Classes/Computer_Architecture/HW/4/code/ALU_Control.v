@@ -19,7 +19,7 @@ module ALU_Control
 // Interface
 input       [9:0] funct_i;
 input       [1:0] aluOp_i;
-output reg  [3:0] aluCtrl_o;
+output reg  [3:0] aluCtrl_o = 0;
 
 // Calculate
 always @(*)

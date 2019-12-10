@@ -23,29 +23,27 @@ module MUX_Stall
 input   [0:0] hazardDetected_i;
 input   [1:0] aluOp_i;
 input   [0:0] aluSrc_i;
-// input   [0:0] wbDst_i;
 input   [0:0] memRead_i;
 input   [0:0] memWrite_i;
 input   [0:0] memToReg_i;
 input   [0:0] regWrite_i;
 input   [0:0] zero_i;
 
-output  [1:0] aluOp_o;
-output  [0:0] aluSrc_o;
-// output  [0:0] wbDst_o;
-output  [0:0] memRead_o;
-output  [0:0] memWrite_o;
-output  [0:0] memToReg_o;
-output  [0:0] regWrite_o;
+output reg  [1:0] aluOp_o = 0;
+output reg  [0:0] aluSrc_o = 0;
+output reg  [0:0] memRead_o = 0;
+output reg  [0:0] memWrite_o = 0;
+output reg  [0:0] memToReg_o = 0;
+output reg  [0:0] regWrite_o = 0;
 
 // Calculate
-assign aluOp_o    = (hazardDetected_i)? 2'b00: aluOp_i;
-assign aluSrc_o   = (hazardDetected_i)? 1'b0: aluSrc_i;
-// assign wbDst_o    = (hazardDetected_i)? 1'b0: wbDst_i;
-assign memRead_o  = (hazardDetected_i)? 1'b0: memRead_i;
-assign memWrite_o = (hazardDetected_i)? 1'b0: memWrite_i;
-assign memToReg_o = (hazardDetected_i)? 1'b0: memToReg_i;
-assign regWrite_o = (hazardDetected_i)? 1'b0: regWrite_i;
-
+always @(*) begin
+    aluOp_o    = (hazardDetected_i)? 2'b00: aluOp_i;
+    aluSrc_o   = (hazardDetected_i)? 1'b0: aluSrc_i;
+    memRead_o  = (hazardDetected_i)? 1'b0: memRead_i;
+    memWrite_o = (hazardDetected_i)? 1'b0: memWrite_i;
+    memToReg_o = (hazardDetected_i)? 1'b0: memToReg_i;
+    regWrite_o = (hazardDetected_i)? 1'b0: regWrite_i;
+end
 
 endmodule

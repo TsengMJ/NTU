@@ -15,8 +15,11 @@ input  [31:0] currentData_i;
 input  [31:0] aluForward_i;
 input  [31:0] memForward_i;
 input  [1:0]  forwarSignal_i;
-output [31:0] output_o;
-// Calculate
+output reg [31:0] output_o = 0;
 
-assign output_o = (forwarSignal_i[1])? aluForward_i: (forwarSignal_i[0])? memForward_i: currentData_i;
+// Calculate
+always @(*) begin
+    output_o = (forwarSignal_i[1])? aluForward_i: (forwarSignal_i[0])? memForward_i: currentData_i;
+end
+
 endmodule

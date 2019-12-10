@@ -21,7 +21,7 @@ module ALU
 input       [31:0] aluSrc1_i;
 input       [31:0] aluSrc2_i;
 input       [ 3:0] aluCtrl_i;
-output reg  [31:0] aluResult_o;
+output reg  [31:0] aluResult_o = 0;
 
 // Calculate
 always @(*)

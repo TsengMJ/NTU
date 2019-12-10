@@ -6,9 +6,11 @@ module Shift
 
 // Interface
 input   [31:0] immExtended_i;
-output  [31:0] immShifted_o;
+output reg  [31:0] immShifted_o = 0;
 
 // Calculate
-assign immShifted_o = immExtended_i <<< 1;
+always @(*) begin
+    immShifted_o = immExtended_i <<< 1;
+end
 
 endmodule

@@ -30,8 +30,8 @@ initial begin
     end
     
     // initialize data memory
-    for(i=0; i<1024; i=i+1) begin
-        CPU.Data_Memory.memory[i] = 32'b0;
+    for(i=0; i<32; i=i+1) begin
+        CPU.Data_Memory.memory[i] = 8'b0;
     end    
 
     // initialize Register File
@@ -43,49 +43,50 @@ initial begin
     CPU.PC.pc_o = 32'b0;
 
     // TODO: initialize pipeline registers
-    // CPU.Register_IF_ID.instr_o = 32'b0;
-	// CPU.Register_IF_ID.instrAddr_o = 32'b0;
+    CPU.Hazard_Detection_Unit.hazardDetected_o = 1'b0;
+    CPU.Register_IF_ID.instr_o = 32'b0;
+	CPU.Register_IF_ID.instrAddr_o = 32'b0;
 
-	// CPU.Register_ID_EX.rsData_o= 32'b0;
-	// CPU.Register_ID_EX.rtData_o= 32'b0;
-	// CPU.Register_ID_EX.immExtended_o= 32'b0;
-	// CPU.Register_ID_EX.aluOp_o= 2'b00;
-	// CPU.Register_ID_EX.aluSrc_o= 1'b0;
-	// // CPU.Register_ID_EX.wbDst_o= 1'b0;
-	// CPU.Register_ID_EX.memRead_o = 1'b0;
-	// CPU.Register_ID_EX.memWrite_o = 1'b0;
-	// CPU.Register_ID_EX.memToReg_o = 1'b0;
-	// CPU.Register_ID_EX.regWrite_o = 1'b0;
-	// CPU.Register_ID_EX.rsAddr_o = 5'b0;
-	// CPU.Register_ID_EX.rtAddr_o = 5'b0;
-	// CPU.Register_ID_EX.rdAddr_o = 5'b0;
-    // CPU.Register_ID_EX.wbAddr_o = 5'b0;
-	// CPU.Register_ID_EX.funct_o = 10'b0;
-    // CPU.Register_ID_EX.memRead_i = 1'b0;
-
+	CPU.Register_ID_EX.rsData_o = 32'b0;
+	CPU.Register_ID_EX.rtData_o = 32'b0;
+	CPU.Register_ID_EX.immExtended_o = 32'b0;
+	CPU.Register_ID_EX.aluOp_o = 2'b0;
+	CPU.Register_ID_EX.aluSrc_o = 1'b0;
+	CPU.Register_ID_EX.memRead_o = 1'b0;
+	CPU.Register_ID_EX.memWrite_o = 1'b0;
+	CPU.Register_ID_EX.memToReg_o = 1'b0;
+	CPU.Register_ID_EX.regWrite_o = 1'b0;
+	CPU.Register_ID_EX.rsAddr_o = 5'b0;
+	CPU.Register_ID_EX.rtAddr_o = 5'b0;
+	CPU.Register_ID_EX.rdAddr_o = 5'b0;
+    CPU.Register_ID_EX.wbAddr_o = 5'b0;
+	CPU.Register_ID_EX.funct_o = 10'b0;
 
 
-	// CPU.Register_EX_MEM.aluResult_o= 32'b0;
-	// CPU.Register_EX_MEM.aluSrc2_o	= 32'b0;
-	// CPU.Register_EX_MEM.memRead_o= 1'b0;
-	// CPU.Register_EX_MEM.memWrite_o= 1'b0;
-	// CPU.Register_EX_MEM.memToReg_o= 1'b0;
-	// CPU.Register_EX_MEM.regWrite_o= 1'b0;
-	// CPU.Register_EX_MEM.wbAddr_o= 5'b0;
+    
 
-	// CPU.Register_MEM_WB.memData_o= 32'b0;
-	// CPU.Register_MEM_WB.aluResult_o= 32'b0;
-	// CPU.Register_MEM_WB.memToReg_o= 1'b0;
-	// CPU.Register_MEM_WB.regWrite_o= 1'b0;
-	// CPU.Register_MEM_WB.wbAddr_o  = 5'b0;
+	CPU.Register_EX_MEM.aluResult_o = 32'b0;
+	CPU.Register_EX_MEM.rtData_o = 32'b0;
+	CPU.Register_EX_MEM.memRead_o = 1'b0;
+	CPU.Register_EX_MEM.memWrite_o = 1'b0;
+	CPU.Register_EX_MEM.memToReg_o = 1'b0;
+	CPU.Register_EX_MEM.regWrite_o = 1'b0;
+	CPU.Register_EX_MEM.wbAddr_o = 5'b0;
 
-    // CPU.Hazard_Detection_Unit.hazardDetected_o = 1'b0;
+	CPU.Register_MEM_WB.memData_o = 32'b0;
+	CPU.Register_MEM_WB.aluResult_o = 32'b0;
+	CPU.Register_MEM_WB.memToReg_o = 1'b0;
+	CPU.Register_MEM_WB.regWrite_o = 1'b0;
+	CPU.Register_MEM_WB.wbAddr_o  = 5'b0;
+
 
 
     
 
     // Load instructions into instruction memory
-    $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
+
+    // $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
+    $readmemb("../testdata/Fibonacci_instruction.txt", CPU.Instruction_Memory.memory);
     
     // Open output file
     outfile = $fopen("../testdata/output.txt") | 1;
@@ -106,7 +107,9 @@ end
   
 always@(posedge Clk) begin
     // TODO: change # of cycles as you need
-    if(counter == 100)    // stop after 30 cycles
+    // if(counter == 30)    // stop after 30 cycles
+    //     $finish;
+    if(counter == 64)    // stop after 30 cycles
         $finish;
 
     // TODO: put in your own signal to count stall and flush

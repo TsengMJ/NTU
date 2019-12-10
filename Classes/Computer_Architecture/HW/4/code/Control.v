@@ -3,21 +3,14 @@ module Control
     opCode_i,
     equal_i,
 
-
     branch_o,
     flush_o,
-
     aluOp_o,
     aluSrc_o,
-
-
     wbDst_o,
-
     memRead_o,
     memWrite_o,
     memToReg_o,
-
-
     regWrite_o
 );
 
@@ -37,27 +30,29 @@ module Control
 input       [6:0]   opCode_i;
 input               equal_i;
 
-output              branch_o; //OK
-output     [1:0]    aluOp_o;  //OK
-output              aluSrc_o;//          TODO  TODO TODO TODO TODO TODO 
-output              wbDst_o;  //OK
-output              memRead_o;   //OK
-output              memWrite_o;  //OK
-output              memToReg_o;  //OK
-output              regWrite_o;  //OK
-output              flush_o;
+output  reg         branch_o = 0; 
+output  reg [1:0]   aluOp_o = 0;
+output  reg         aluSrc_o = 0;
+output  reg         wbDst_o = 0;
+output  reg         memRead_o = 0;
+output  reg         memWrite_o = 0;
+output  reg         memToReg_o = 0;
+output  reg         regWrite_o = 0;
+output  reg         flush_o = 0;
 
 // Calculation
-assign branch_o = (opCode_i == 7'b1100011 && equal_i)? 1'b1: 1'b0;
-assign flush_o  = (opCode_i == 7'b1100011 && equal_i)? 1'b1: 1'b0;
-assign aluOp_o = (opCode_i == 7'b0110011)? 2'b10: (opCode_i == 7'b0010011)? 2'b01: 2'b00;
-assign aluSrc_o = (opCode_i == 7'b0110011 )? 1'b0: 1'b1; 
-assign wbDst_o = (opCode_i == 7'b0000011 ||opCode_i ==7'b0100011)? 1'b0: 1'b1; // access mem -> 0 else 1 
-assign memRead_o = (opCode_i == 7'b0000011)? 1'b1: 1'b0;
-assign memWrite_o = (opCode_i == 7'b0100011)? 1'b1: 1'b0;
-assign memToReg_o = (opCode_i == 7'b0000011)? 1'b1: 1'b0;
-assign regWrite_o = (opCode_i == 7'b0110011 || opCode_i == 7'b0010011 )? 1'b1: 1'b0;
 
+always @(*) begin
+    branch_o = (opCode_i == 7'b1100011 && equal_i)? 1'b1: 1'b0;
+    flush_o  = (opCode_i == 7'b1100011 && equal_i)? 1'b1: 1'b0;
+    aluOp_o = (opCode_i == 7'b0110011)? 2'b10: (opCode_i == 7'b0010011)? 2'b01: 2'b00;
+    aluSrc_o = (opCode_i == 7'b0110011 )? 1'b0: 1'b1; 
+    wbDst_o = (opCode_i == 7'b0100011)? 1'b0: 1'b1; // access mem -> 0 else 1 
+    memRead_o = (opCode_i == 7'b0000011)? 1'b1: 1'b0;
+    memWrite_o = (opCode_i == 7'b0100011)? 1'b1: 1'b0;
+    memToReg_o = (opCode_i == 7'b0000011)? 1'b1: 1'b0;
+    regWrite_o = (opCode_i == 7'b0100011 || opCode_i == 7'b1100011 )? 1'b0: 1'b1;
+end
 
 endmodule
 

@@ -29,13 +29,21 @@ output  reg  [31:0]  memData_o;
 output  reg  [31:0]  aluResult_o;
 output  reg  [4:0]   wbAddr_o;
 
+reg  [0:0]   memToReg_reg = 0;
+reg  [0:0]   regWrite_reg = 0;
+reg  [31:0]  memData_reg = 0;
+reg  [31:0]  aluResult_reg = 0;
+reg  [4:0]   wbAddr_reg = 0;
+
 // Calculation
 always @ (posedge clk_i) begin
-    memToReg_o  <= memToReg_i;
-    regWrite_o  <= regWrite_i;
-    memData_o   <= memData_i;
-    aluResult_o <= aluResult_i;
-    wbAddr_o    <= wbAddr_i;
+    if(clk_i)begin
+        memToReg_o  <= memToReg_i;
+        regWrite_o  <= regWrite_i;
+        memData_o   <= memData_i;
+        aluResult_o <= aluResult_i;
+        wbAddr_o    <= wbAddr_i;
+    end
 end
 
 

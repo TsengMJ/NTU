@@ -12,9 +12,11 @@ input  [31:0] source1_i;
 input  [31:0] source2_i;
 input  [ 0:0] signal_i;
 
-output [31:0] output_o ;
+output reg [31:0] output_o = 0;
 
 // Calculate
-assign output_o = (signal_i)? source2_i: source1_i;
+always @(*) begin
+    output_o = (signal_i)? source2_i: source1_i;
+end
 
 endmodule

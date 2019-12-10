@@ -8,9 +8,12 @@ module Adder
 // Interface
 input	[31:0] operand1_i;
 input	[31:0] operand2_i;
-output	[31:0] result_o;
+output  reg	[31:0]  result_o = 0;
 
 // Calculation
-assign result_o = operand1_i + operand2_i;
+always @(*) begin
+    result_o = operand1_i + operand2_i;
+end
+
 
 endmodule
