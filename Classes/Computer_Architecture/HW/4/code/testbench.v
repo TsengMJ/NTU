@@ -35,7 +35,39 @@ initial begin
     end
 
     // TODO: initialize pipeline registers
-    
+    	CPU.Register_IF_ID.instr_o = 32'b0;
+	CPU.Register_IF_ID.instrAddr_o = 32'b0;
+
+	CPU.Register_ID_EX.rsData_o= 32'b0;
+	CPU.Register_ID_EX.rtData_o= 32'b0;
+	CPU.Register_ID_EX.immExtended_o= 32'b0;
+	CPU.Register_ID_EX.aluOp_o= 2'b0;
+	CPU.Register_ID_EX.aluSrc_o= 1'b0;
+	CPU.Register_ID_EX.wbDst_o= 1'b0;
+	CPU.Register_ID_EX.memRead_o= 1'b0;
+	CPU.Register_ID_EX.memWrite_o= 1'b0;
+	CPU.Register_ID_EX.memToReg_o= 1'b0;
+	CPU.Register_ID_EX.regWrite_o= 1'b0;
+	CPU.Register_ID_EX.rsAddr_o= 4'b0;
+	CPU.Register_ID_EX.rtAddr_o= 4'b0;
+	CPU.Register_ID_EX.rdAddr_o= 4'b0;
+	CPU.Register_ID_EX.funct_o= 10'b0;
+
+
+	CPU.Register_EX_MEM.aluResult_o= 32'b0;
+	CPU.Register_EX_MEM.aluSrc2_o	= 32'b0;
+	CPU.Register_EX_MEM.memRead_o= 1'b0;
+	CPU.Register_EX_MEM.memWrite_o= 1'b0;
+	CPU.Register_EX_MEM.memToReg_o= 1'b0;
+	CPU.Register_EX_MEM.regWrite_o= 1'b0;
+	CPU.Register_EX_MEM.wbAddr_o= 6'b0;
+
+	CPU.Register_MEM_WB.memData_o= 32'b0;
+	CPU.Register_MEM_WB.aluResult_o= 32'b0;
+	CPU.Register_MEM_WB.memToReg_o= 1'b0;
+	CPU.Register_MEM_WB.regWrite_o= 1'b0;
+	CPU.Register_MEM_WB.wbAddr_o  = 6'b0;
+
     // Load instructions into instruction memory
     $readmemb("../testdata/instruction.txt", CPU.Instruction_Memory.memory);
     
