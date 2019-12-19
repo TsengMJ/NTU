@@ -43,40 +43,6 @@ initial begin
     CPU.PC.pc_o = 32'b0;
 
     // TODO: initialize pipeline registers
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/testbench.v
-    	CPU.Register_IF_ID.instr_o = 32'b0;
-	CPU.Register_IF_ID.instrAddr_o = 32'b0;
-
-	CPU.Register_ID_EX.rsData_o= 32'b0;
-	CPU.Register_ID_EX.rtData_o= 32'b0;
-	CPU.Register_ID_EX.immExtended_o= 32'b0;
-	CPU.Register_ID_EX.aluOp_o= 2'b0;
-	CPU.Register_ID_EX.aluSrc_o= 1'b0;
-	CPU.Register_ID_EX.wbDst_o= 1'b0;
-	CPU.Register_ID_EX.memRead_o= 1'b0;
-	CPU.Register_ID_EX.memWrite_o= 1'b0;
-	CPU.Register_ID_EX.memToReg_o= 1'b0;
-	CPU.Register_ID_EX.regWrite_o= 1'b0;
-	CPU.Register_ID_EX.rsAddr_o= 4'b0;
-	CPU.Register_ID_EX.rtAddr_o= 4'b0;
-	CPU.Register_ID_EX.rdAddr_o= 4'b0;
-	CPU.Register_ID_EX.funct_o= 10'b0;
-
-
-	CPU.Register_EX_MEM.aluResult_o= 32'b0;
-	CPU.Register_EX_MEM.aluSrc2_o	= 32'b0;
-	CPU.Register_EX_MEM.memRead_o= 1'b0;
-	CPU.Register_EX_MEM.memWrite_o= 1'b0;
-	CPU.Register_EX_MEM.memToReg_o= 1'b0;
-	CPU.Register_EX_MEM.regWrite_o= 1'b0;
-	CPU.Register_EX_MEM.wbAddr_o= 6'b0;
-
-	CPU.Register_MEM_WB.memData_o= 32'b0;
-	CPU.Register_MEM_WB.aluResult_o= 32'b0;
-	CPU.Register_MEM_WB.memToReg_o= 1'b0;
-	CPU.Register_MEM_WB.regWrite_o= 1'b0;
-	CPU.Register_MEM_WB.wbAddr_o  = 6'b0;
-=======
     CPU.Hazard_Detection_Unit.hazardDetected_o = 1'b0;
     CPU.Register_IF_ID.instr_o = 32'b0;
 	CPU.Register_IF_ID.instrAddr_o = 32'b0;
@@ -116,7 +82,6 @@ initial begin
 
 
     
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/testbench.v
 
     // Load instructions into instruction memory
 

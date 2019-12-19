@@ -49,25 +49,15 @@ wire    [0:0]   ID_memToRegMux;
 wire    [0:0]   ID_regWriteMux;
 wire    [0:0]   ID_IFFlush;
 wire    [0:0]   ID_aluSrc;
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-wire    [0:0]   ID_wbDst;
-=======
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 wire    [0:0]   ID_memRead;
 wire    [0:0]   ID_memWrite;
 wire    [0:0]   ID_memToReg;
 wire    [0:0]   ID_regWrite;
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-wire    [0:0]   ID_zero;
-wire    [0:0]   ID_branch;
-wire    [0:0]   ID_equal;
-=======
 wire    [4  :0]   ID_wbAddr;
 wire    [0:0]   ID_zero;
 wire    [0:0]   ID_branch;
 wire    [0:0]   ID_equal;
 wire    [0:0]   ID_wbDst;
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 wire    [1:0]   ID_aluOp;
 wire    [1:0]   ID_aluOpMux;
 wire    [4:0]   ID_rsAddr;
@@ -75,15 +65,9 @@ wire    [4:0]   ID_rtAddr;
 wire    [4:0]   ID_rdAddr;
 wire    [6:0]   ID_opCode;
 wire    [9:0]   ID_funct;
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-wire    [11:0]  ID_imm;rsData;
-wire    [31:0]  ID_r
-wire    [31:0]  ID_tData;
-=======
 wire    [11:0]  ID_imm;
 wire    [31:0]  ID_rsData;
 wire    [31:0]  ID_rtData;
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 wire    [31:0]  ID_immShifted;
 wire    [31:0]  ID_immExtended;
 wire    [31:0]  ID_instrAddr;
@@ -94,22 +78,15 @@ wire    [31:0]  ID_instr;
 // EX Section
 wire    [0:0]   EX_aluSrc;
 wire    [0:0]   EX_wbDst;
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-wire    [0:0]   EX_aluOp;
-=======
 wire    [1:0]   EX_aluOp;
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 wire    [0:0]   EX_memRead;
 wire    [0:0]   EX_memWrite;
 wire    [0:0]   EX_memToReg;
 wire    [0:0]   EX_regWrite;
 wire    [1:0]   EX_forwardingA;
 wire    [1:0]   EX_forwardingB;
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-=======
 wire    [1:0]   EX_forwardingC;
 wire    [31:0]  EX_rtForward;
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 wire    [3:0]   EX_aluCtrl;
 wire    [4:0]   EX_rsAddr;
 wire    [4:0]   EX_rtAddr;
@@ -120,16 +97,9 @@ wire    [31:0]  EX_rsData;
 wire    [31:0]  EX_rtData;
 wire    [31:0]  EX_immExtended;
 wire    [31:0]  EX_rt_immMuxOutput;
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-wire    [31:0]  EX_aluForwarding;
-wire    [31:0]  EX_memForwarding;
-wire    [31:0]  EX_aluSrc1;
-wire    [31:0]  EX_aluSrc2;
-=======
 wire    [31:0]  EX_aluSrc1;
 wire    [31:0]  EX_aluSrc2;
 wire    [31:0]  EX_memWriteData;
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 wire    [31:0]  EX_aluResult;
 
 
@@ -140,20 +110,6 @@ wire    [0:0]   MEM_memToReg;
 wire    [0:0]   MEM_regWrite;
 wire    [4:0]   MEM_wbAddr;
 wire    [31:0]  MEM_aluResult;
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-wire    [31:0]  MEM_aluSrc2;
-wire    [31:0]  MEM_memData;
-
-
-// WB Section
-wire    [0:0]   WB_memToReg
-wire    [0:0]   WB_regWrite
-wire    [4:0]   WB_wbAddr
-wire    [31:0]  WB_memData
-wire    [31:0]  WB_aluResult
-wire    [31:0]  WB_wbData
-
-=======
 wire    [31:0]  MEM_memData;
 wire    [31:0]  MEM_rtData;
 
@@ -181,17 +137,7 @@ assign ID_funct  = {ID_instr[31:25], ID_instr[14:12]};
 // begin
 //      one <= ~ID_hazardDetected;
 // end
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 
-// Assign wires
-assign IF_instrSize = 32'b0100;
-assign ID_zero = 1'b0;
-assign ID_opCode = ID_instr[6:0];
-assign ID_rsAddr = ID_instr[19:15];
-assign ID_rtAddr = ID_instr[24:20];
-assign ID_rdAddr = ID_instr[11:7];
-assign ID_imm    = ID_instr[31:20];
-assign ID_funct  = {ID_instr[31:25], ID_instr[14:12]};
 
 
 // Original
@@ -213,11 +159,7 @@ Registers Registers(
     .clk_i          (clk_i),
     .RS1addr_i      (ID_rsAddr),
     .RS2addr_i      (ID_rtAddr),
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-    .RDaddr_i       (ID_rdAddr),
-=======
     .RDaddr_i       (WB_wbAddr),
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
     .RDdata_i       (WB_wbData),
     .RegWrite_i     (WB_regWrite),
     .RS1data_o      (ID_rsData),
@@ -229,11 +171,7 @@ Data_Memory Data_Memory(
 
     .addr_i         (MEM_aluResult),
     .MemWrite_i     (MEM_memWrite),
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-    .data_i         (MEM_aluSrc2),
-=======
     .data_i         (MEM_rtData),
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
     .data_o         (MEM_memData)
 );
 
@@ -400,10 +338,7 @@ Register_ID_EX Register_ID_EX(
     .rsAddr_i           (ID_rsAddr),
     .rtAddr_i           (ID_rtAddr),
     .rdAddr_i           (ID_rdAddr),
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-=======
     .wbAddr_i           (ID_wbAddr),
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
     .funct_i            (ID_funct),
 
     .aluOp_o            (EX_aluOp),
@@ -417,14 +352,9 @@ Register_ID_EX Register_ID_EX(
     .immExtended_o      (EX_immExtended),
     .rsAddr_o           (EX_rsAddr),
     .rtAddr_o           (EX_rtAddr),
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-    .rdAddr_o           (EX_rdAddr)
-    .funct_o            (EX_funct),
-=======
     .rdAddr_o           (EX_rdAddr),
     .wbAddr_o           (EX_wbAddr),    
     .funct_o            (EX_funct)
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 );
 
 Register_EX_MEM Register_EX_MEM(
@@ -483,17 +413,6 @@ Branch_Equal Branch_Equal(
 );
 
 Forwarding_Unit Forwarding_Unit(
-<<<<<<< HEAD:Classes/Computer_Architecture/HW/4/code/CPU.v
-    .ID_EX_RegisterRs2_i        (EX_rsAddr),
-    .ID_EX_RegisterRs1_i        (EX_rtAddr),
-    .EX_MEM_RegWrite_i          (MEM_regWrite),
-    .EX_MEM_RegisterRd_i        (MEM_wbAddr),
-    .MEM_WB_RegWrite_i          (WB_regWrite),
-    .MEM_WB_RegisterRd_i        (WB_wbAddr),  
-
-    .Forward_A_o                (EX_forwardingA),
-    .Forward_B_o                (EX_forwardingB)
-=======
     .EX_rsAddr_i        (EX_rsAddr),
     .EX_rtAddr_i        (EX_rtAddr),
     .MEM_regWrite_i     (MEM_regWrite),
@@ -504,7 +423,6 @@ Forwarding_Unit Forwarding_Unit(
     .Forward_A_o                (EX_forwardingA),
     .Forward_B_o                (EX_forwardingB),
     .Forward_C_o                (EX_forwardingC)
->>>>>>> da8f5dc6281b5542f4b7345dab5f5a7e2bd8ab44:Classes/Computer_Architecture/HW/4/code (Ori)/CPU.v
 );
 
 Hazard_Detection_Unit Hazard_Detection_Unit(
