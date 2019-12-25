@@ -1,6 +1,7 @@
 module Register_EX_MEM
 (
     clk_i,
+    stall_i,
 
     memRead_i,
     memWrite_i,
@@ -21,6 +22,8 @@ module Register_EX_MEM
 
 // Interface
 input               clk_i;
+input               stall_i;
+
 input               memRead_i;
 input               memWrite_i;
 input               memToReg_i;
@@ -29,13 +32,13 @@ input       [31:0]  aluResult_i;
 input       [31:0]  rtData_i;
 input       [4:0]   wbAddr_i;
 
-output  reg         memRead_o;
-output  reg         memWrite_o;
-output  reg         memToReg_o;
-output  reg         regWrite_o;
-output  reg  [31:0] aluResult_o;
-output  reg  [31:0] rtData_o;
-output  reg  [4:0]  wbAddr_o;
+output  reg         memRead_o  = 0;
+output  reg         memWrite_o = 0;
+output  reg         memToReg_o = 0;
+output  reg         regWrite_o = 0;
+output  reg  [31:0] aluResult_o = 0;
+output  reg  [31:0] rtData_o = 0;
+output  reg  [4:0]  wbAddr_o = 0;
 
 // Calculation
 always @ (posedge clk_i ) begin

@@ -1,6 +1,7 @@
 module Register_MEM_WB
 (
     clk_i,
+    stall_i,
 
     memToReg_i,
     regWrite_i,
@@ -17,17 +18,19 @@ module Register_MEM_WB
 
 // Interface
 input               clk_i;
+input               stall_i;
+
 input               memToReg_i;
 input               regWrite_i;
 input       [31:0]  memData_i;
 input       [31:0]  aluResult_i;
 input       [4:0]   wbAddr_i;
 
-output  reg         memToReg_o;
-output  reg         regWrite_o;
-output  reg [31:0]  memData_o;
-output  reg [31:0]  aluResult_o;
-output  reg [4:0]   wbAddr_o;
+output  reg         memToReg_o = 0;
+output  reg         regWrite_o = 0;
+output  reg [31:0]  memData_o = 0;
+output  reg [31:0]  aluResult_o = 0;
+output  reg [4:0]   wbAddr_o = 0;
 
 
 // Calculation

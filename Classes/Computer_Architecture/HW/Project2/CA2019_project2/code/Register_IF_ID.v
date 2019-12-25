@@ -1,7 +1,8 @@
 module Register_IF_ID
 (
     clk_i,
-
+    stall_i,
+    
     instr_i,
     instrAddr_i,
     hazardDetected_i,
@@ -12,13 +13,15 @@ module Register_IF_ID
 
 // Interface
 input               clk_i;
+input               stall_i;
+
 input               IFFlush_i;
 input       [31:0]  instr_i;
 input       [31:0]  instrAddr_i;
 input               hazardDetected_i;
 
-output reg  [31:0]  instr_o;
-output reg  [31:0]  instrAddr_o;
+output reg  [31:0]  instr_o = 0;
+output reg  [31:0]  instrAddr_o = 0;
 
 // Calculate
 always @ (posedge clk_i) begin

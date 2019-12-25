@@ -1,4 +1,3 @@
-
 module dcache_top
 (
     // System clock, reset and stall
@@ -119,10 +118,15 @@ assign    cache_dirty  = write_hit;
 
 // tag comparator
 // TODO: add you code here!  (hit=...?,  r_hit_data=...?)
+assign hit = ((sram_tag == p1_tag) and sram_valid)? 1'b1: 1'b0;  // OK
+assign r_hit_data = sram_cache_data;                             // OK
     
+
+reg     tmp;
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
     // TODO: add you code here! (p1_data=...?)
+    p1_data = r_hit_data[(p1_offse[4]*4 + p1_offse[3]*2 + p1_offse[2]*1)*32+31 : (p1_offse[4]*4 + p1_offse[3]*2 + p1_offse[2]*1)*32] // OK
 end
 
 

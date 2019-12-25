@@ -1,7 +1,8 @@
 module Register_ID_EX
 (
     clk_i,
-
+    stall_i,
+    
     aluOp_i,
     aluSrc_i,
     memRead_i,
@@ -34,6 +35,8 @@ module Register_ID_EX
 );
 // Interface
 input               clk_i;
+input               stall_i;
+
 input       [1:0]   aluOp_i;
 input               aluSrc_i;
 input               memRead_i;
@@ -49,20 +52,20 @@ input       [4:0]   rdAddr_i;
 input       [4:0]   wbAddr_i;
 input       [9:0]   funct_i;
 
-output  reg  [1:0]  aluOp_o;
-output  reg         aluSrc_o;
-output  reg         memRead_o;
-output  reg         memWrite_o;
-output  reg         memToReg_o;
-output  reg         regWrite_o;
-output  reg  [31:0] rsData_o;
-output  reg  [31:0] rtData_o;
-output  reg  [31:0] immExtended_o;
-output  reg  [4:0]  rsAddr_o;
-output  reg  [4:0]  rtAddr_o;
-output  reg  [4:0]  rdAddr_o;
-output  reg  [4:0]  wbAddr_o;
-output  reg  [9:0]  funct_o;
+output  reg  [1:0]  aluOp_o = 0;
+output  reg         aluSrc_o = 0;
+output  reg         memRead_o = 0;
+output  reg         memWrite_o = 0;
+output  reg         memToReg_o = 0;
+output  reg         regWrite_o = 0;
+output  reg  [31:0] rsData_o   = 0;
+output  reg  [31:0] rtData_o  = 0;
+output  reg  [31:0] immExtended_o = 0;
+output  reg  [4:0]  rsAddr_o = 0;
+output  reg  [4:0]  rtAddr_o = 0;
+output  reg  [4:0]  rdAddr_o = 0;
+output  reg  [4:0]  wbAddr_o = 0;
+output  reg  [9:0]  funct_o = 0;
 
 
 // Calculation
