@@ -1,3 +1,6 @@
+`include "CPU.v"
+`include "Data_Memory.v"
+
 `define CYCLE_TIME 50
 
 module TestBench;
@@ -46,6 +49,9 @@ Data_Memory Data_Memory
 );
   
 initial begin
+    $dumpfile("Project2.vcd");
+    $dumpvars;
+
     counter = 0;
     
     // initialize instruction memory (1KB)

@@ -23,15 +23,15 @@ output   [255:0]    data_o;
 
 // Memory
 reg      [255:0]    memory[0:511];    //16KB
-reg      [3:0]      count;
+reg      [3:0]      count = 4'b0;
 
-reg      [255:0]    data;
+reg      [255:0]    data = 256'b0;
 wire     [26:0]     addr;
 
 parameter STATE_IDLE            = 1'h0,
           STATE_WAIT            = 1'h1;            
 
-reg        [1:0]        state;
+reg        [1:0]        state = 0;
 
 assign    ack_o = (state == STATE_WAIT) && (count == 4'd9);
 assign    addr = addr_i>>5;

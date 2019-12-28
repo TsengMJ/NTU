@@ -52,26 +52,26 @@ input       [4:0]   rdAddr_i;
 input       [4:0]   wbAddr_i;
 input       [9:0]   funct_i;
 
-output  reg  [1:0]  aluOp_o = 0;
-output  reg         aluSrc_o = 0;
-output  reg         memRead_o = 0;
-output  reg         memWrite_o = 0;
-output  reg         memToReg_o = 0;
-output  reg         regWrite_o = 0;
-output  reg  [31:0] rsData_o   = 0;
-output  reg  [31:0] rtData_o  = 0;
-output  reg  [31:0] immExtended_o = 0;
-output  reg  [4:0]  rsAddr_o = 0;
-output  reg  [4:0]  rtAddr_o = 0;
-output  reg  [4:0]  rdAddr_o = 0;
-output  reg  [4:0]  wbAddr_o = 0;
-output  reg  [9:0]  funct_o = 0;
+output  reg  [1:0]  aluOp_o = 2'b0;
+output  reg         aluSrc_o = 1'b0;
+output  reg         memRead_o = 1'b0;
+output  reg         memWrite_o = 1'b0;
+output  reg         memToReg_o = 1'b0;
+output  reg         regWrite_o = 1'b0;
+output  reg  [31:0] rsData_o   = 32'b0;
+output  reg  [31:0] rtData_o  = 32'b0;
+output  reg  [31:0] immExtended_o = 32'b0;
+output  reg  [4:0]  rsAddr_o = 5'b0;
+output  reg  [4:0]  rtAddr_o = 5'b0;
+output  reg  [4:0]  rdAddr_o = 5'b0;
+output  reg  [4:0]  wbAddr_o = 5'b0;
+output  reg  [9:0]  funct_o = 10'b0;
 
 
 // Calculation
-always @ (posedge clk_i ) begin
+always @(*) begin
 
-    if (clk_i) begin
+    if (clk_i & ~stall_i) begin
         aluOp_o    <= aluOp_i;
         aluSrc_o   <= aluSrc_i;
         memRead_o  <= memRead_i;

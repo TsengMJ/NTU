@@ -8,7 +8,7 @@ module Adder
 // Interface
 input	    [31:0]  operand1_i;
 input	    [31:0]  operand2_i;
-output  reg	[31:0]  result_o = 0;
+output  reg	[31:0]  result_o = 32'b0;
 
 // Calculation
 always @(*) begin

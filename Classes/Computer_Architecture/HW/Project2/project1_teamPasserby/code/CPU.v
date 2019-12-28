@@ -23,38 +23,19 @@
 
 module CPU
 (
-	clk_i,
-	rst_i,
-	start_i,
-   
-	mem_data_i, 
-	mem_ack_i, 	
-	mem_data_o, 
-	mem_addr_o, 	
-	mem_enable_o, 
-	mem_write_o
+    clk_i, 
+    start_i
 );
 
-//input
-input clk_i;
-input rst_i;
-input start_i;
+// Ports
+input         clk_i;
+input         start_i;
 
-//
-// to Data Memory interface		
-//
-input	[256-1:0]	mem_data_i; 
-input			    mem_ack_i; 	
-output	[256-1:0]	mem_data_o; 
-output	[32-1:0]	mem_addr_o; 	
-output			    mem_enable_o; 
-output			    mem_write_o; 
-
-// Project1 here!
 // Wires 專區
 // IF Section
 wire    [31:0]  IF_pc;
 wire    [31:0]  IF_instrAddr;
+wire    [31:0]  IF_instrSize;
 wire    [31:0]  IF_instr;
 wire    [31:0]  IF_pcNext;
 
@@ -72,13 +53,19 @@ wire    [0:0]   ID_memRead;
 wire    [0:0]   ID_memWrite;
 wire    [0:0]   ID_memToReg;
 wire    [0:0]   ID_regWrite;
-wire    [4:0]   ID_wbAddr;
+wire    [4  :0]   ID_wbAddr;
+wire    [0:0]   ID_zero;
 wire    [0:0]   ID_branch;
 wire    [0:0]   ID_equal;
 wire    [0:0]   ID_wbDst;
 wire    [1:0]   ID_aluOp;
 wire    [1:0]   ID_aluOpMux;
+wire    [4:0]   ID_rsAddr;
+wire    [4:0]   ID_rtAddr;
+wire    [4:0]   ID_rdAddr;
+wire    [6:0]   ID_opCode;
 wire    [9:0]   ID_funct;
+wire    [11:0]  ID_imm;
 wire    [31:0]  ID_rsData;
 wire    [31:0]  ID_rtData;
 wire    [31:0]  ID_immShifted;
@@ -125,7 +112,6 @@ wire    [4:0]   MEM_wbAddr;
 wire    [31:0]  MEM_aluResult;
 wire    [31:0]  MEM_memData;
 wire    [31:0]  MEM_rtData;
-wire            MEM_stall;
 
 // WB Section
 wire    [0:0]   WB_memToReg;
@@ -137,8 +123,60 @@ wire    [31:0]  WB_wbData;
 
 
 // Assign wires
+assign IF_instrSize = 32'b0100;
+assign ID_zero = 1'b0;
+assign ID_opCode = ID_instr[6:0];
+assign ID_rsAddr = ID_instr[19:15];
+assign ID_rtAddr = ID_instr[24:20];
+assign ID_rdAddr = ID_instr[11:7];
+// assign ID_imm    = ID_instr[31:20];
 assign ID_funct  = {ID_instr[31:25], ID_instr[14:12]};
 
+// reg one = 1'b1; 
+// always @(ID_hazardDetected)
+// begin
+//      one <= ~ID_hazardDetected;
+// end
+
+
+
+// Original
+PC PC(
+    .clk_i          (clk_i), 
+    .rst_i          (rst_i),
+    .start_i        (start_i),
+    .PCWrite_i      (~ID_hazardDetected),
+    .pc_i           (IF_pc),
+    .pc_o           (IF_instrAddr)
+);
+
+Instruction_Memory Instruction_Memory(
+    .addr_i         (IF_instrAddr),
+    .instr_o        (IF_instr)
+);
+
+Registers Registers(
+    .clk_i          (clk_i),
+    .RS1addr_i      (ID_rsAddr),
+    .RS2addr_i      (ID_rtAddr),
+    .RDaddr_i       (WB_wbAddr),
+    .RDdata_i       (WB_wbData),
+    .RegWrite_i     (WB_regWrite),
+    .RS1data_o      (ID_rsData),
+    .RS2data_o      (ID_rtData)
+);
+
+Data_Memory Data_Memory(
+    .clk_i          (clk_i),
+
+    .addr_i         (MEM_aluResult),
+    .MemWrite_i     (MEM_memWrite),
+    .data_i         (MEM_rtData),
+    .data_o         (MEM_memData)
+);
+
+
+// Start HERE!!
 
 // ADDER 專區
 Adder PC_Adder(
@@ -162,6 +200,13 @@ MUX32 PC_Dst_MUX(
     .output_o       (IF_pc)
 );
 
+// MUX32 RT_IMM_MUX(
+//     .source1_i      (EX_rtData),
+//     .source2_i      (EX_immExtended),
+//     .signal_i       (EX_aluSrc),
+//     .output_o       (EX_rt_immMuxOutput)
+// );
+
 MUX32 RT_IMM_MUX(
     .source1_i      (EX_rtForward),
     .source2_i      (EX_immExtended),
@@ -169,9 +214,10 @@ MUX32 RT_IMM_MUX(
     .output_o       (EX_aluSrc2)
 );
 
+
 MUX5 WB_Addr_MUX(
-    .source1_i       (ID_instr[24:20]),
-    .source2_i       (ID_instr[11:7]),
+    .source1_i       (ID_rtAddr),
+    .source2_i       (ID_rdAddr),
     .signal_i        (ID_wbDst),
     .output_o        (ID_wbAddr)
 );
@@ -200,6 +246,19 @@ MUX_AluSrc MUX_AluSrc2(
     .output_o        (EX_rtForward)
 );
 
+// MUX_AluSrc RT_forward(
+//     .currentData_i   (EX_rtData),
+//     .aluForward_i    (MEM_aluResult),
+//     .memForward_i    (WB_wbData),
+//     .forwarSignal_i  (EX_forwardingC),
+//     .output_o        (EX_rtForward)
+// );
+
+
+
+// use to forward mem write data
+
+
 MUX_Stall MUX_Stall(
     .hazardDetected_i   (ID_hazardDetected),
     .aluOp_i            (ID_aluOp),
@@ -208,7 +267,7 @@ MUX_Stall MUX_Stall(
     .memWrite_i         (ID_memWrite),
     .memToReg_i         (ID_memToReg),
     .regWrite_i         (ID_regWrite),
-    .zero_i             (1'b0),
+    .zero_i             (ID_zero),
     
     .aluOp_o            (ID_aluOpMux),
     .aluSrc_o           (ID_aluSrcMux),
@@ -217,6 +276,7 @@ MUX_Stall MUX_Stall(
     .memToReg_o         (ID_memToRegMux),
     .regWrite_o         (ID_regWriteMux)
 );
+
 
 
 // ALU 專區
@@ -230,7 +290,7 @@ ALU ALU(
 
 // CONTROLER 專區
 Control Control(
-    .opCode_i       (ID_instr[6:0]),
+    .opCode_i       (ID_opCode),
     .equal_i        (ID_equal),
 
     .branch_o       (ID_branch),
@@ -254,7 +314,6 @@ ALU_Control ALU_Control(
 // PIPELINE REGISTER 專區
 Register_IF_ID Register_IF_ID(
     .clk_i              (clk_i),
-    .stall_i            (MEM_stall),
 
     .instr_i            (IF_instr),
     .instrAddr_i        (IF_instrAddr),
@@ -266,7 +325,6 @@ Register_IF_ID Register_IF_ID(
 
 Register_ID_EX Register_ID_EX(
     .clk_i              (clk_i),
-    .stall_i            (MEM_stall),
 
     .aluOp_i            (ID_aluOpMux),
     .aluSrc_i           (ID_aluSrcMux),
@@ -277,9 +335,9 @@ Register_ID_EX Register_ID_EX(
     .rsData_i           (ID_rsData),
     .rtData_i           (ID_rtData),
     .immExtended_i      (ID_immExtended),
-    .rsAddr_i           (ID_instr[19:15]),
-    .rtAddr_i           (ID_instr[24:20]),
-    .rdAddr_i           (ID_instr[11:7]),
+    .rsAddr_i           (ID_rsAddr),
+    .rtAddr_i           (ID_rtAddr),
+    .rdAddr_i           (ID_rdAddr),
     .wbAddr_i           (ID_wbAddr),
     .funct_i            (ID_funct),
 
@@ -300,41 +358,39 @@ Register_ID_EX Register_ID_EX(
 );
 
 Register_EX_MEM Register_EX_MEM(
-    .clk_i          (clk_i),
-    .stall_i        (MEM_stall),
+    .clk_i              (clk_i),
 
-    .memRead_i      (EX_memRead),
-    .memWrite_i     (EX_memWrite),
-    .memToReg_i     (EX_memToReg),
-    .regWrite_i     (EX_regWrite),
-    .aluResult_i    (EX_aluResult),
-    .rtData_i       (EX_rtForward),
-    .wbAddr_i       (EX_wbAddr),
+    .memRead_i          (EX_memRead),
+    .memWrite_i         (EX_memWrite),
+    .memToReg_i         (EX_memToReg),
+    .regWrite_i         (EX_regWrite),
+    .aluResult_i        (EX_aluResult),
+    .rtData_i           (EX_rtForward),
+    .wbAddr_i           (EX_wbAddr),
 
-    .memRead_o      (MEM_memRead),
-    .memWrite_o     (MEM_memWrite),
-    .memToReg_o     (MEM_memToReg),
-    .regWrite_o     (MEM_regWrite),
-    .aluResult_o    (MEM_aluResult),
-    .rtData_o       (MEM_rtData),
-    .wbAddr_o       (MEM_wbAddr)
+    .memRead_o          (MEM_memRead),
+    .memWrite_o         (MEM_memWrite),
+    .memToReg_o         (MEM_memToReg),
+    .regWrite_o         (MEM_regWrite),
+    .aluResult_o        (MEM_aluResult),
+    .rtData_o           (MEM_rtData),
+    .wbAddr_o           (MEM_wbAddr)
 );
 
 Register_MEM_WB Register_MEM_WB(
-    .clk_i          (clk_i),
-    .stall_i        (MEM_stall),
+    .clk_i              (clk_i),
 
-    .memToReg_i     (MEM_memToReg),
-    .regWrite_i     (MEM_regWrite),
-    .memData_i      (MEM_memData),
-    .aluResult_i    (MEM_aluResult),
-    .wbAddr_i       (MEM_wbAddr),
+    .memToReg_i         (MEM_memToReg),
+    .regWrite_i         (MEM_regWrite),
+    .memData_i          (MEM_memData),
+    .aluResult_i        (MEM_aluResult),
+    .wbAddr_i           (MEM_wbAddr),
 
-    .memToReg_o     (WB_memToReg),
-    .regWrite_o     (WB_regWrite),
-    .memData_o      (WB_memData),
-    .aluResult_o    (WB_aluResult),
-    .wbAddr_o       (WB_wbAddr)
+    .memToReg_o         (WB_memToReg),
+    .regWrite_o         (WB_regWrite),
+    .memData_o          (WB_memData),
+    .aluResult_o        (WB_aluResult),
+    .wbAddr_o           (WB_wbAddr)
 );
 
 
@@ -351,94 +407,30 @@ Shift Shift(
 );
 
 Branch_Equal Branch_Equal(
-    .rsData_i       (ID_rsData),
-    .rtData_i       (ID_rtData),
-    .equal_o        (ID_equal)
+    .rsData_i    (ID_rsData),
+    .rtData_i    (ID_rtData),
+    .equal_o     (ID_equal)
 );
 
 Forwarding_Unit Forwarding_Unit(
-    .EX_rsAddr_i    (EX_rsAddr),
-    .EX_rtAddr_i    (EX_rtAddr),
-    .MEM_regWrite_i (MEM_regWrite),
-    .MEM_wbAddr_i   (MEM_wbAddr),
-    .WB_regWrite_i  (WB_regWrite),
-    .WB_wbAddr_i    (WB_wbAddr),  
+    .EX_rsAddr_i        (EX_rsAddr),
+    .EX_rtAddr_i        (EX_rtAddr),
+    .MEM_regWrite_i     (MEM_regWrite),
+    .MEM_wbAddr_i       (MEM_wbAddr),
+    .WB_regWrite_i      (WB_regWrite),
+    .WB_wbAddr_i        (WB_wbAddr),  
 
-    .Forward_A_o    (EX_forwardingA),
-    .Forward_B_o    (EX_forwardingB)
+    .Forward_A_o                (EX_forwardingA),
+    .Forward_B_o                (EX_forwardingB),
+    .Forward_C_o                (EX_forwardingC)
 );
 
 Hazard_Detection_Unit Hazard_Detection_Unit(
-    .ID_rsAddr_i        (ID_instr[19:15]),
-    .ID_rtAddr_i        (ID_instr[24:20]),
+    .ID_rsAddr_i        (ID_rsAddr),
+    .ID_rtAddr_i        (ID_rtAddr),
     .EX_memRead_i       (EX_memRead),
     .EX_wbAddr_i        (EX_wbAddr),
     .hazardDetected_o   (ID_hazardDetected)
 );
-
-// Project1 here!
-
-
-PC PC
-(
-	.clk_i(clk_i),
-	.rst_i(rst_i),
-	.start_i(start_i),
-	.stall_i(MEM_stall), 
-	.PCWrite_i(~ID_hazardDetected),
-	.pc_i(IF_pc),
-	.pc_o(IF_instrAddr)
-);
-
-Instruction_Memory Instruction_Memory(
-	.addr_i(IF_instrAddr), 
-	.instr_o(IF_instr)
-);
-
-Registers Registers(
-    .clk_i          (clk_i),
-    .RS1addr_i      (ID_instr[19:15]),
-    .RS2addr_i      (ID_instr[24:20]),
-    .RDaddr_i       (WB_wbAddr),
-    .RDdata_i       (WB_wbData),
-    .RegWrite_i     (WB_regWrite),
-    .RS1data_o      (ID_rsData),
-    .RS2data_o      (ID_rtData)
-);
-
-//data cache
-dcache_top dcache(
-    // System clock, reset and stall
-	.clk_i(clk_i), 
-	.rst_i(rst_i),
-	
-	// to Data Memory interface		
-	.mem_data_i(mem_data_i), 
-	.mem_ack_i(mem_ack_i), 	
-	.mem_data_o(mem_data_o), 
-	.mem_addr_o(mem_addr_o), 	
-	.mem_enable_o(mem_enable_o), 
-	.mem_write_o(mem_write_o), 
-	
-	// to CPU interface	
-	.p1_data_i(MEM_rtData), 
-	.p1_addr_i(MEM_aluResult), 	
-	.p1_MemRead_i(MEM_memRead), 
-	.p1_MemWrite_i(MEM_memWrite), 
-	.p1_data_o(MEM_memData), 
-	.p1_stall_o(MEM_stall)
-);
-
-Data_Memory Data_Memory(
-    .clk_i      (clk_i),
-    .rst_i      (rst_i),
-
-    .addr_i     (mem_addr_o),
-    .data_i     (mem_data_o),
-    .enable_i   (mem_enable_o),
-    .write_i    (mem_write_o),
-    .ack_o      (mem_ack_i),
-    .data_o     (mem_data_i)
-)
 
 endmodule

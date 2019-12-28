@@ -34,8 +34,8 @@ output  reg [4:0]   wbAddr_o = 0;
 
 
 // Calculation
-always @ (posedge clk_i) begin
-    if(clk_i)begin
+always @ (*) begin
+    if(clk_i & ~stall_i)begin
         memToReg_o  <= memToReg_i;
         regWrite_o  <= regWrite_i;
         memData_o   <= memData_i;

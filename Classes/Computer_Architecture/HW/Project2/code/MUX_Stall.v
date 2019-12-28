@@ -27,12 +27,12 @@ input               memToReg_i;
 input               regWrite_i;
 input               zero_i;
 
-output reg  [1:0]   aluOp_o = 0;
-output reg          aluSrc_o = 0;
-output reg          memRead_o = 0;
-output reg          memWrite_o = 0;
-output reg          memToReg_o = 0;
-output reg          regWrite_o = 0;
+output reg  [1:0]   aluOp_o = 2'b0;
+output reg          aluSrc_o = 1'b0;
+output reg          memRead_o = 1'b0;
+output reg          memWrite_o = 1'b0;
+output reg          memToReg_o = 1'b0;
+output reg          regWrite_o = 1'b0;
 
 // Calculate
 always @(*) begin

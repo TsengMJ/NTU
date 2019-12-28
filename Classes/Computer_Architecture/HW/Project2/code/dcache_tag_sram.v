@@ -19,7 +19,7 @@ output   [23:0]    data_o;
 
 
 // Memory
-reg      [23:0]    memory [0:31];    
+reg      [23:0]    memory [0:31]; 
 
 
 // Write Data      

@@ -32,17 +32,17 @@ input       [31:0]  aluResult_i;
 input       [31:0]  rtData_i;
 input       [4:0]   wbAddr_i;
 
-output  reg         memRead_o  = 0;
-output  reg         memWrite_o = 0;
-output  reg         memToReg_o = 0;
-output  reg         regWrite_o = 0;
-output  reg  [31:0] aluResult_o = 0;
-output  reg  [31:0] rtData_o = 0;
-output  reg  [4:0]  wbAddr_o = 0;
+output  reg         memRead_o  = 1'b0;
+output  reg         memWrite_o = 1'b0;
+output  reg         memToReg_o = 1'b0;
+output  reg         regWrite_o = 1'b0;
+output  reg  [31:0] aluResult_o = 32'b0;
+output  reg  [31:0] rtData_o = 32'b0;
+output  reg  [4:0]  wbAddr_o = 5'b0;
 
 // Calculation
-always @ (posedge clk_i ) begin
-    if(clk_i)begin
+always @ (*) begin
+    if(clk_i & ~stall_i)begin
         memRead_o   <= memRead_i;
         memWrite_o <= memWrite_i;
         memToReg_o  <= memToReg_i;

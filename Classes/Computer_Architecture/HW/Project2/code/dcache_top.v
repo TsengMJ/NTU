@@ -1,3 +1,4 @@
+
 module dcache_top
 (
     // System clock, reset and stall
@@ -118,21 +119,38 @@ assign    cache_dirty  = write_hit;
 
 // tag comparator
 // TODO: add you code here!  (hit=...?,  r_hit_data=...?)
-assign hit = ((sram_tag == p1_tag) and sram_valid)? 1'b1: 1'b0;  // OK
+assign hit = ((sram_tag == p1_tag) & sram_valid)? 1'b1: 1'b0;  // OK
 assign r_hit_data = sram_cache_data;                             // OK
     
 
-reg     tmp;
+
 // read data :  256-bit to 32-bit
 always@(p1_offset or r_hit_data) begin
     // TODO: add you code here! (p1_data=...?)
-    p1_data = r_hit_data[(p1_offse[4]*4 + p1_offse[3]*2 + p1_offse[2]*1)*32+31 : (p1_offse[4]*4 + p1_offse[3]*2 + p1_offse[2]*1)*32] // OK
+    if (p1_offset[4:2] == 3'b000) begin p1_data = r_hit_data[31:0]; end
+    if (p1_offset[4:2] == 3'b001) begin p1_data = r_hit_data[63:32]; end
+    if (p1_offset[4:2] == 3'b010) begin p1_data = r_hit_data[95:64]; end
+    if (p1_offset[4:2] == 3'b011) begin p1_data = r_hit_data[127:96]; end
+    if (p1_offset[4:2] == 3'b100) begin p1_data = r_hit_data[159:128]; end
+    if (p1_offset[4:2] == 3'b101) begin p1_data = r_hit_data[191:160]; end
+    if (p1_offset[4:2] == 3'b110) begin p1_data = r_hit_data[223:192]; end
+    if (p1_offset[4:2] == 3'b111) begin p1_data = r_hit_data[255:224]; end
 end
 
 
 // write data :  32-bit to 256-bit
 always@(p1_offset or r_hit_data or p1_data_i) begin
     // TODO: add you code here! (w_hit_data=...?)
+    if(write_hit) begin
+        if (p1_offset[4:2] == 3'b000) begin w_hit_data[31:0] = p1_data_i; end
+        if (p1_offset[4:2] == 3'b001) begin w_hit_data[63:32] = p1_data_i; end
+        if (p1_offset[4:2] == 3'b010) begin w_hit_data[95:64] = p1_data_i; end
+        if (p1_offset[4:2] == 3'b011) begin w_hit_data[127:96] = p1_data_i; end
+        if (p1_offset[4:2] == 3'b100) begin w_hit_data[159:128] = p1_data_i; end
+        if (p1_offset[4:2] == 3'b101) begin w_hit_data[191:160] = p1_data_i; end
+        if (p1_offset[4:2] == 3'b110) begin w_hit_data[223:192] = p1_data_i; end
+        if (p1_offset[4:2] == 3'b111) begin w_hit_data[255:224] = p1_data_i; end
+    end
 end
 
 
@@ -142,7 +160,7 @@ always@(posedge clk_i or negedge rst_i) begin
         state      <= STATE_IDLE;
         mem_enable <= 1'b0;
         mem_write  <= 1'b0;
-        cache_we   <= 1'b0; 
+        cache_we   <= 1'b0;
         write_back <= 1'b0;
     end
     else begin
@@ -157,17 +175,24 @@ always@(posedge clk_i or negedge rst_i) begin
             end
             STATE_MISS: begin
                 if(sram_dirty) begin          //write back if dirty
-                    // TODO: add you code here! 
+                    // TODO: add you code here!
+                    mem_write <= 1'b1;      //OK
+                    write_back <= 1'b1;     //OK
                     state <= STATE_WRITEBACK;
                 end
                 else begin                    //write allocate: write miss = read miss + write hit; read miss = read miss + read hit
                     // TODO: add you code here! 
+                    mem_write <= 1'b0;      //OK
+					write_back <= 1'b0;     //OK
                     state <= STATE_READMISS;
                 end
+            mem_enable <= 1'b1;               //OK
             end
             STATE_READMISS: begin
                 if(mem_ack_i) begin            //wait for data memory acknowledge
                     // TODO: add you code here! 
+					cache_we <= 1'b1;       //OK
+                    mem_enable <= 1'b0;     //OK
                     state <= STATE_READMISSOK;
                 end
                 else begin
@@ -176,11 +201,14 @@ always@(posedge clk_i or negedge rst_i) begin
             end
             STATE_READMISSOK: begin            //wait for data memory acknowledge
                     // TODO: add you code here! 
+                cache_we <= 1'b1;           //OK
                 state <= STATE_IDLE;
             end
             STATE_WRITEBACK: begin
                 if(mem_ack_i) begin            //wait for data memory acknowledge
                     // TODO: add you code here! 
+                    write_back <= 1'b0;     //OK
+                    mem_write <= 1'b0;      //OK
                     state <= STATE_READMISS;
                 end
                 else begin
