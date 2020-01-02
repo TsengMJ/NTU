@@ -1,28 +1,28 @@
-`include "PC.v"
-`include "Instruction_Memory.v"
-`include "Registers.v"
-`include "Adder.v"
-`include "MUX32.v"
-`include "MUX5.v"
-`include "MUX_MemToReg.v"
-`include "MUX_AluSrc.v"
-`include "MUX_Stall.v"
-`include "ALU.v"
-`include "Control.v"
-`include "ALU_Control.v"
-`include "Register_IF_ID.v"
-`include "Register_ID_EX.v"
-`include "Register_EX_MEM.v"
-`include "Register_MEM_WB.v"
-`include "Sign_Extend.v"
-`include "Shift.v"
-`include "Branch_Equal.v"
-`include "Forwarding_Unit.v"
-`include "Hazard_Detection_Unit.v"
+// `include "PC.v"
+// `include "Instruction_Memory.v"
+// `include "Registers.v"
+// `include "Adder.v"
+// `include "MUX32.v"
+// `include "MUX5.v"
+// `include "MUX_MemToReg.v"
+// `include "MUX_AluSrc.v"
+// `include "MUX_Stall.v"
+// `include "ALU.v"
+// `include "Control.v"
+// `include "ALU_Control.v"
+// `include "Register_IF_ID.v"
+// `include "Register_ID_EX.v"
+// `include "Register_EX_MEM.v"
+// `include "Register_MEM_WB.v"
+// `include "Sign_Extend.v"
+// `include "Shift.v"
+// `include "Branch_Equal.v"
+// `include "Forwarding_Unit.v"
+// `include "Hazard_Detection_Unit.v"
 
-`include "dcache_top.v"
-`include "dcache_data_sram.v"
-`include "dcache_tag_sram.v"
+// `include "dcache_top.v"
+// `include "dcache_data_sram.v"
+// `include "dcache_tag_sram.v"
 
 module CPU
 (
@@ -379,6 +379,7 @@ Hazard_Detection_Unit Hazard_Detection_Unit(
     .ID_rtAddr_i        (ID_instr[24:20]),
     .EX_memRead_i       (EX_memRead),
     .EX_wbAddr_i        (EX_wbAddr),
+    .opCode_i           (ID_instr[6:0]),
     .hazardDetected_o   (ID_hazardDetected)
 );
 

@@ -1,5 +1,5 @@
-`include "CPU.v"
-`include "Data_Memory.v"
+// `include "CPU.v"
+// `include "Data_Memory.v"
 
 `define CYCLE_TIME 50
 
